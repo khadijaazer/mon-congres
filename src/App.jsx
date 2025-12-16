@@ -174,6 +174,7 @@ const Topics = () => (
 );
 
 // --- PAPER SUBMISSION ---
+// --- PAPER SUBMISSION (VERSION CORRIGÉE AVEC SUPABASE) ---
 const PaperSubmission = () => {
   const [formData, setFormData] = useState({ title: '', type: 'Oral', name: '', email: '', institution: '' });
   const [file, setFile] = useState(null);
@@ -182,16 +183,53 @@ const PaperSubmission = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!file) { alert("Please select a file to upload."); return; }
+    
     setLoading(true);
-    // Simulation upload logic ...
-    setTimeout(() => { setSuccess(true); setLoading(false); }, 1500);
+
+    try {
+      // 1. Upload du fichier (PDF/DOC) dans le Bucket "abstracts"
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${formData.name.replace(/\s/g, '_')}.${fileExt}`;
+
+      const { data: fileData, error: fileError } = await supabase.storage
+        .from('abstracts')
+        .upload(fileName, file);
+
+      if (fileError) throw fileError;
+
+      // 2. Récupérer l'URL publique du fichier
+      const { data: { publicUrl } } = supabase.storage
+        .from('abstracts')
+        .getPublicUrl(fileName);
+
+      // 3. Insérer les données dans la table SQL
+      const { error: dbError } = await supabase.from('paper_submissions').insert([{
+        paper_title: formData.title,
+        presentation_type: formData.type,
+        author_name: formData.name,
+        author_email: formData.email,
+        institution: formData.institution,
+        file_url: publicUrl // On stocke le lien du fichier
+      }]);
+
+      if (dbError) throw dbError;
+
+      setSuccess(true);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error submitting paper: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (success) return (
     <section id="submission" style={{padding:'80px 0', textAlign:'center'}}>
       <CheckCircle size={60} color="#2e7d32" style={{margin:'0 auto 20px'}}/>
-      <h2 style={{color:'#2e7d32'}}>Submitted Successfully!</h2>
-      <button onClick={() => setSuccess(false)} className="btn-primary" style={{width:'auto', marginTop:'20px'}}>Back</button>
+      <h2 style={{color:'#2e7d32'}}>Paper Submitted Successfully!</h2>
+      <p>We have received your abstract.</p>
+      <button onClick={() => setSuccess(false)} className="btn-primary" style={{width:'auto', marginTop:'20px'}}>Submit another</button>
     </section>
   );
 
@@ -206,17 +244,26 @@ const PaperSubmission = () => {
           </div>
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <input type="text" placeholder="Paper Title" required onChange={e => setFormData({...formData, title: e.target.value})} />
+              <input type="text" placeholder="Paper Title" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
+            </div>
+             <div className="form-group">
+              <select value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})}>
+                <option value="Oral">Oral Presentation</option>
+                <option value="Poster">Poster Presentation</option>
+              </select>
             </div>
             <div className="form-group">
-              <input type="text" placeholder="Full Name" required onChange={e => setFormData({...formData, name: e.target.value})} />
+              <input type="text" placeholder="Full Name" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
             </div>
             <div className="form-group">
-              <input type="email" placeholder="Email Address" required onChange={e => setFormData({...formData, email: e.target.value})} />
+              <input type="email" placeholder="Email Address" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+            </div>
+            <div className="form-group">
+              <input type="text" placeholder="Institution / University" required value={formData.institution} onChange={e => setFormData({...formData, institution: e.target.value})} />
             </div>
             <div className="form-group">
                <label style={{fontSize:'0.9rem', fontWeight:'bold', display:'block', marginBottom:'5px'}}>Upload Abstract (PDF)</label>
-               <input type="file" required onChange={e => setFile(e.target.files[0])} style={{background:'white'}} />
+               <input type="file" accept=".pdf,.doc,.docx" required onChange={e => setFile(e.target.files[0])} style={{background:'white'}} />
             </div>
             <button type="submit" className="btn-primary" disabled={loading} style={{marginTop:'20px'}}>
               {loading ? 'Uploading...' : 'Submit Abstract'}
