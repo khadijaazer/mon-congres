@@ -1,0 +1,220 @@
+/* --- Variables & Reset --- */
+:root {
+  --primary: #2e7d32;      /* Vert feuillage */
+  --secondary: #1b5e20;    /* Vert foncé */
+  --accent: #a5d6a7;       /* Vert clair */
+  --bg-light: #f1f8e9;     /* Fond teinté */
+  --text-dark: #1a1a1a;
+  --white: #ffffff;
+  --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-dark);
+  background-color: var(--white);
+  line-height: 1.6;
+  overflow-x: hidden; /* Empêche le scroll horizontal sur mobile */
+}
+
+a { text-decoration: none; color: inherit; transition: 0.3s; }
+ul { list-style: none; }
+
+/* --- Layout Utils --- */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 40px;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+/* --- Buttons --- */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  font-size: 1rem;
+  text-align: center;
+}
+.btn-primary { background-color: var(--primary); color: var(--white); }
+.btn-primary:hover { background-color: var(--secondary); }
+
+/* --- Header --- */
+.main-header {
+  padding: 20px 0;
+  border-bottom: 5px solid var(--accent);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo-box { display: flex; align-items: center; gap: 15px; }
+
+.logo-img {
+  width: 70px; height: 70px;
+  background: var(--accent); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--secondary);
+  border: 2px solid var(--primary);
+  flex-shrink: 0;
+}
+
+.conference-title h1 {
+  font-size: 1.8rem;
+  color: var(--text-dark);
+  line-height: 1.2;
+}
+
+.conference-date-loc {
+  text-align: right;
+  font-weight: bold;
+  color: var(--primary);
+  min-width: 180px;
+}
+
+/* --- Navbar (Responsive) --- */
+.navbar {
+  background: #1a1a1a;
+  color: var(--white);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 0;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  padding: 0 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.nav-toggle {
+  display: none; /* Caché sur PC */
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.nav-links {
+  display: flex;
+  gap: 25px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.nav-links a:hover { color: var(--accent); }
+
+/* --- Welcome Section --- */
+.welcome-section { padding: 60px 0; }
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+}
+
+.important-dates-box {
+  background-color: var(--bg-light);
+  padding: 25px;
+  border-radius: 8px;
+  border-left: 5px solid var(--primary);
+  box-shadow: var(--shadow);
+  height: fit-content;
+}
+
+.date-item {
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+.date-label { font-weight: bold; color: var(--secondary); display: block; }
+
+/* --- Grid General (Topics, Speakers) --- */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.card {
+  background: var(--white);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  border-top: 3px solid var(--primary);
+}
+
+/* --- Form --- */
+.form-box {
+  background: var(--bg-light);
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.form-group input, .form-group select {
+  width: 100%; padding: 12px; margin-top: 5px;
+  border: 1px solid #ccc; border-radius: 4px;
+}
+
+/* =========================================
+   📱 MEDIA QUERIES (POUR MOBILE)
+   ========================================= */
+
+@media (max-width: 900px) {
+  /* Header : Tout centrer en colonne */
+  .header-content { flex-direction: column; text-align: center; }
+  .logo-box { flex-direction: column; }
+  .conference-date-loc { text-align: center; margin-top: 10px; }
+  
+  /* Welcome : Passer en une seule colonne */
+  .overview-grid { grid-template-columns: 1fr; }
+  
+  /* Navbar Mobile */
+  .nav-toggle { display: block; } /* Afficher le bouton burger */
+  
+  .nav-links {
+    display: none; /* Caché par défaut */
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background: #1a1a1a;
+    padding: 20px;
+    text-align: center;
+    border-top: 1px solid #333;
+  }
+
+  .nav-links.open { display: flex; } /* Affiché quand ouvert */
+}
+
+@media (max-width: 600px) {
+  .section-title { font-size: 1.8rem; }
+  .conference-title h1 { font-size: 1.5rem; }
+  .hero h1 { font-size: 2rem; }
+  .form-box { padding: 20px; }
+}
