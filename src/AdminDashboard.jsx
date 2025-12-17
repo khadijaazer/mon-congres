@@ -14,7 +14,7 @@ const AdminDashboard = () => {
 
   // --- CONFIGURATION SÉCURITÉ ---
   // Remplace ceci par l'email EXACT de ton client
-  const ALLOWED_EMAIL = "ton_client@gmail.com"; 
+  const ALLOWED_EMAIL = "khadidjaazer1234@gmail.com"; 
   
   const navigate = useNavigate();
 
