@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { Calendar, MapPin, CheckCircle, Leaf, Beaker, Globe, Menu, X, UploadCloud, User, Award, Mic, Clock, Zap, BookOpen, Phone, Mail } from 'lucide-react';
+
 // Si oran.jpg est dans public/, on utilise le chemin direct string, pas d'import
 const oranBg = "/oran.jpg"; 
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState(null);
+  // NOUVEAU : État pour le speaker sélectionné (si tu veux la modale bio)
+  const [selectedSpeaker, setSelectedSpeaker] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -31,7 +34,7 @@ function App() {
       <Objectives />
       <Topics onTopicClick={setSelectedTopic} />
       <Schedule />
-      <Speakers />
+      <Speakers onSpeakerClick={setSelectedSpeaker}/>
       <PaperSubmission />
       <Registration />
       <Hotels />
@@ -39,6 +42,11 @@ function App() {
 
       {selectedTopic && (
         <TopicModal topic={selectedTopic} onClose={() => setSelectedTopic(null)} />
+      )}
+      
+      {/* Modale Speaker (Optionnel si tu veux afficher les bios) */}
+      {selectedSpeaker && (
+        <SpeakerModal speaker={selectedSpeaker} onClose={() => setSelectedSpeaker(null)} />
       )}
     </div>
   );
@@ -131,7 +139,7 @@ const Objectives = () => (
         <div className="objective-card">
           <div className="icon-box-pro"><Leaf /></div>
           <h3>Promote Principles</h3>
-          <p>Raise awareness of green chemistry: waste prevention, safer design, and renewable resources.</p>
+          <p>Raise awareness of green chemistry: waste prevention, safer design, energy efficiency, and renewable resources.</p>
         </div>
         <div className="objective-card">
           <div className="icon-box-pro"><Beaker /></div>
@@ -273,18 +281,28 @@ const Schedule = () => {
 };
 
 // --- SPEAKERS ---
-const Speakers = () => {
+const Speakers = ({ onSpeakerClick }) => {
   const speakers = [
-    { name: "Prof. Andrea Pucci", country: "Italy" },
-    { name: "Prof. Gianluca Viscusi", country: "Italy" },
-    { name: "Prof. Katarzyna Kiegiel", country: "Poland" },
-    { name: "Prof. Mohammed El-Shazly", country: "Egypt" },
-    { name: "Prof. Radosław Kowalski", country: "Poland" },
-    { name: "Prof. Klaus Kümmerer", country: "Germany" },
-    { name: "Prof. Ebrahim Talebi", country: "Iran" },
-    { name: "Prof. Thomais Vlachogianni", country: "Greece" },
-    { name: "Prof. Landseer Tang", country: "Singapore" },
-    { name: "Prof. Salete Balula", country: "Portugal" },
+    { 
+      name: "Prof. Gianluca Viscusi", 
+      country: "Italy", 
+      image: "/dr-gianluca.jpg", // Assure-toi que l'image est dans public/
+      institution: "University of Salerno",
+      bio: `Dr Gianluca Viscusi graduated in Chemical Engineering in 2016 with full honours at the Department of Industrial Engineering of the University of Salerno. Since 2015, he has been a teaching assistant of Fundamentals of Chemistry. In 2021, he got his PhD in Industrial Engineering. His main research topics concern:
+• Design, fabrication and characterisation of natural fibes reinforced polymeric systems
+• Production of fibrous membrane obtained through electrospinning techniques as sustainable systems for tissue engineering applications
+• Application of Mechanochemistry to design advanced materials
+• Design of smart materials for adsorption and photodegradation of pollutants` // Ajoute le reste de la bio si tu veux
+    },
+    { name: "Prof. Andrea Pucci", country: "Italy", institution: "University of Pisa" },
+    { name: "Prof. Katarzyna Kiegiel", country: "Poland", institution: "Institute of Nuclear Chemistry" },
+    { name: "Prof. Mohammed El-Shazly", country: "Egypt", institution: "Ain Shams University" },
+    { name: "Prof. Radosław Kowalski", country: "Poland", institution: "Lublin University" },
+    { name: "Prof. Klaus Kümmerer", country: "Germany", institution: "Leuphana University" },
+    { name: "Prof. Ebrahim Talebi", country: "Iran", institution: "Darab University" },
+    { name: "Prof. Thomais Vlachogianni", country: "Greece", institution: "University of Athens" },
+    { name: "Prof. Landseer Tang", country: "Singapore", institution: "Singapore Tech" },
+    { name: "Prof. Salete Balula", country: "Portugal", institution: "University of Porto" },
   ];
 
   return (
@@ -296,9 +314,9 @@ const Speakers = () => {
         </div>
         <div className="speakers-grid">
           {speakers.map((s, i) => (
-            <div key={i} className="speaker-card-mini">
+            <div key={i} className="speaker-card-mini" onClick={() => onSpeakerClick(s)}>
               <div className="speaker-avatar">
-                 <User size={40} color="#15803d"/>
+                 {s.image ? <img src={s.image} alt={s.name} /> : <User size={40} color="#15803d"/>}
               </div>
               <div style={{textAlign:'left'}}>
                 <h4>{s.name}</h4>
@@ -492,7 +510,7 @@ const Sponsors = () => {
   );
 };
 
-// --- MODAL ---
+// --- MODALES (TOPIC & SPEAKER) ---
 const TopicModal = ({ topic, onClose }) => {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -517,6 +535,34 @@ const TopicModal = ({ topic, onClose }) => {
               <li key={i}><CheckCircle size={16} color="#15803d" style={{marginRight:'10px'}}/> {tag}</li>
             ))}
           </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const SpeakerModal = ({ speaker, onClose }) => {
+  useEffect(() => { document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = 'unset'; }; }, []);
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="speaker-modal-card reveal active" onClick={e => e.stopPropagation()}>
+        <button className="modal-close-btn" onClick={onClose}><X size={24}/></button>
+        <div className="speaker-modal-grid">
+          <div className="speaker-sidebar">
+            <div className="speaker-profile-img">
+              {speaker.image ? <img src={speaker.image} alt={speaker.name} /> : <div className="placeholder-avatar"><User size={80} color="#fff"/></div>}
+            </div>
+            <div className="speaker-sidebar-info">
+              <span className="speaker-badge">Keynote Speaker</span>
+              <h3>{speaker.name}</h3>
+              <p className="speaker-uni">{speaker.institution}</p>
+              <div className="speaker-loc"><MapPin size={16} style={{display:'inline', marginRight:'5px'}}/> {speaker.country}</div>
+            </div>
+          </div>
+          <div className="speaker-content">
+            <h4 className="content-title">Biography</h4>
+            <p className="bio-text">{speaker.bio || "Biography not available yet."}</p>
+          </div>
         </div>
       </div>
     </div>
