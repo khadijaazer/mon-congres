@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { Calendar, MapPin, Mail, Phone, CheckCircle, Leaf, Beaker, Globe, Menu, X, UploadCloud, ArrowRight, User, Award, Mic } from 'lucide-react';
+import { Calendar, MapPin, CheckCircle, Leaf, Beaker, Globe, Menu, X, UploadCloud, User, Award, Mic, Clock, Zap, BookOpen, Phone, Mail } from 'lucide-react';
+// Si oran.jpg est dans public/, on utilise le chemin direct string, pas d'import
+const oranBg = "/oran.jpg"; 
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState(null);
 
-  // Gestion du Scroll et Animations
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
@@ -26,20 +27,16 @@ function App() {
     <div className="app-wrapper">
       <Navbar scrolled={scrolled} />
       <Hero />
-      <Stats />
       <AboutSection />
-      <Sponsors />
-      
-      {/* Passage de la fonction d'ouverture de modale */}
+      <Objectives />
       <Topics onTopicClick={setSelectedTopic} />
-      
-      <PaperSubmission />
+      <Schedule />
       <Speakers />
+      <PaperSubmission />
       <Registration />
       <Hotels />
       <Footer />
 
-      {/* Affichage de la Modale */}
       {selectedTopic && (
         <TopicModal topic={selectedTopic} onClose={() => setSelectedTopic(null)} />
       )}
@@ -53,14 +50,14 @@ const Navbar = ({ scrolled }) => {
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="container nav-container">
-        <div className="nav-logo">IGCC 2026</div>
+        <div className="nav-logo">ICGCSD 2026</div>
         <button className={`nav-toggle ${isOpen ? 'active' : ''}`} onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
         <div className={`nav-links ${isOpen ? 'open' : ''}`}>
           <a href="#home" onClick={() => setIsOpen(false)}>Home</a>
-          <a href="#about" onClick={() => setIsOpen(false)}>About</a>
-          <a href="#topics" onClick={() => setIsOpen(false)}>Topics</a>
+          <a href="#about" onClick={() => setIsOpen(false)}>Overview</a>
+          <a href="#schedule" onClick={() => setIsOpen(false)}>Program</a>
           <a href="#speakers" onClick={() => setIsOpen(false)}>Speakers</a>
           <a href="#registration" onClick={() => setIsOpen(false)}>Registration</a>
           <a href="#submission" className="btn-primary-nav" onClick={() => setIsOpen(false)}>Submit Abstract</a>
@@ -73,113 +70,106 @@ const Navbar = ({ scrolled }) => {
 // --- HERO SECTION ---
 const Hero = () => (
   <section id="home" className="hero-section" style={{
-    // Utilisation de l'image locale dans public/
-    backgroundImage: `linear-gradient(rgba(0, 20, 50, 0.5), rgba(0, 40, 20, 0.6)), url(/oran.jpg)`,
+    backgroundImage: `linear-gradient(rgba(0, 20, 50, 0.6), rgba(0, 40, 20, 0.7)), url(${oranBg})`,
   }}>
     <div className="container hero-content reveal">
       <div className="hero-badges">
-        <div className="badge"><Calendar size={16}/> May 30-31, 2026</div>
-        <div className="badge"><MapPin size={16}/> Le Méridien, Oran</div>
+        <div className="badge"><Calendar size={16}/> 30-31 May 2026</div>
+        <div className="badge"><MapPin size={16}/> Univ. of Oran 1 & Saida</div>
       </div>
-      <h1>Green Chemistry &<br/>Sustainable Future</h1>
-      <p>Join the 3rd International Congress in the radiant city of Oran.</p>
+      <h1 style={{fontSize: '3rem', marginTop:'20px'}}>Green Chemistry &<br/>Sustainable Development</h1>
+      <h2 style={{fontSize: '1.8rem', fontWeight:'300', marginBottom:'30px', color:'#facc15'}}>Health and Environment</h2>
+      
       <div style={{display:'flex', gap:'20px', justifyContent:'center', marginTop:'30px'}}>
         <a href="#registration" className="btn-hero">Register Now</a>
-        <a href="#topics" className="btn-outline">View Program</a>
+        <a href="#schedule" className="btn-outline">View Schedule</a>
       </div>
     </div>
   </section>
-);
-
-// --- STATS ---
-const Stats = () => (
-  <div className="stats-bar">
-    <div className="container stats-grid">
-      <div className="stat-item"><h3>30+</h3><p>Speakers</p></div>
-      <div className="stat-item"><h3>500+</h3><p>Attendees</p></div>
-      <div className="stat-item"><h3>40+</h3><p>Countries</p></div>
-      <div className="stat-item"><h3>15</h3><p>Workshops</p></div>
-    </div>
-  </div>
 );
 
 // --- ABOUT SECTION ---
 const AboutSection = () => (
   <section id="about" className="about-section">
-    {/* Utilisation de l'image locale dans public/ */}
     <img src="/salle.jpg" alt="Conference Hall" className="about-img"/>
     <div className="about-content reveal">
-      <span className="section-label">About The Conference</span>
-      <h2 className="section-title">Innovating for a Greener Tomorrow</h2>
+      <span className="section-label">Conference Overview</span>
+      <h2 className="section-title">A Milestone for Green Chemistry</h2>
       <p className="text-body">
-        The International Green Chemistry Congress (IGCC) is a premier global event bringing together the brightest minds in academia and industry.
-        Hosted in the beautiful coastal city of Oran, this year's theme focuses on "Sustainable Synthesis and Circular Economy".
+        This prestigious event marks the <strong>official launch of the National Center for Green Chemistry</strong> and honors <strong>Professor Mohamed Belbachir</strong>, a pioneer of green chemistry in Algeria.
       </p>
-      <div style={{display:'flex', flexDirection:'column', gap:'15px'}}>
-         <div className="check-item"><CheckCircle size={20} color="#15803d"/> Networking with Global Experts</div>
-         <div className="check-item"><CheckCircle size={20} color="#15803d"/> Publish in High-Impact Journals</div>
-         <div className="check-item"><CheckCircle size={20} color="#15803d"/> Discover Oran's Culture</div>
+      <p className="text-body">
+        We aim to promote environmentally friendly practices that protect human health and the environment, bringing together researchers to exchange knowledge on innovative chemical solutions.
+      </p>
+      <div className="stats-mini-grid">
+         <div className="stat-box">
+            <span className="stat-num">2</span>
+            <span className="stat-lbl">Days</span>
+         </div>
+         <div className="stat-box">
+            <span className="stat-num">4</span>
+            <span className="stat-lbl">Main Axes</span>
+         </div>
+         <div className="stat-box">
+            <span className="stat-num">10+</span>
+            <span className="stat-lbl">Keynotes</span>
+         </div>
       </div>
     </div>
   </section>
 );
 
-// --- MODAL COMPONENT ---
-const TopicModal = ({ topic, onClose }) => {
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = 'unset'; };
-  }, []);
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content reveal active" onClick={e => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}><X size={24}/></button>
-        <div className="modal-header">
-          <div className="icon-box-pro" style={{width:'60px', height:'60px'}}><topic.icon size={30} /></div>
-          <div>
-            <span className="section-label" style={{marginBottom:'5px', fontSize:'0.8rem'}}>Track Details</span>
-            <h3 style={{fontSize:'1.8rem', fontFamily:'Playfair Display, serif'}}>{topic.title}</h3>
-          </div>
+// --- OBJECTIVES ---
+const Objectives = () => (
+  <section className="section-padding bg-light">
+    <div className="container reveal">
+      <div className="section-header">
+        <span className="section-label">Our Mission</span>
+        <h2 className="section-title">Conference Objectives</h2>
+      </div>
+      <div className="grid-2">
+        <div className="objective-card">
+          <div className="icon-box-pro"><Leaf /></div>
+          <h3>Promote Principles</h3>
+          <p>Raise awareness of green chemistry: waste prevention, safer design, and renewable resources.</p>
         </div>
-        <div className="modal-body">
-          <p className="modal-desc">{topic.desc}</p>
-          <h4 style={{marginTop:'20px', marginBottom:'10px', color:'#1e293b'}}>Key Discussion Points:</h4>
-          <ul className="modal-list">
-            {topic.tags.map((tag, i) => (
-              <li key={i}><CheckCircle size={16} color="#15803d" style={{marginRight:'10px'}}/> {tag}</li>
-            ))}
-             <li><CheckCircle size={16} color="#15803d" style={{marginRight:'10px'}}/> Innovations in {topic.title}</li>
-          </ul>
-          <div style={{marginTop:'30px', padding:'20px', background:'#f0fdf4', borderRadius:'10px', border:'1px dashed #15803d'}}>
-            <p style={{fontSize:'0.9rem', color:'#14532d', fontWeight:'600'}}>Interested in presenting?</p>
-            <a href="#submission" onClick={onClose} style={{color:'#15803d', textDecoration:'underline', fontSize:'0.9rem'}}>Submit your abstract here</a>
-          </div>
+        <div className="objective-card">
+          <div className="icon-box-pro"><Beaker /></div>
+          <h3>Eco-Friendly Processes</h3>
+          <p>Minimize toxic substances, reduce energy consumption, and limit greenhouse gas emissions.</p>
+        </div>
+        <div className="objective-card">
+          <div className="icon-box-pro"><Globe /></div>
+          <h3>Sustainable Applications</h3>
+          <p>Showcase real-world applications in pharmaceuticals, agriculture, energy, and materials science.</p>
+        </div>
+        <div className="objective-card">
+          <div className="icon-box-pro"><User /></div>
+          <h3>International Cooperation</h3>
+          <p>Foster collaboration between universities and research centers to build strong global networks.</p>
         </div>
       </div>
     </div>
-  );
-};
+  </section>
+);
 
 // --- TOPICS ---
 const Topics = ({ onTopicClick }) => {
   const topicsData = [
-    { icon: Leaf, title: "Green Synthesis", desc: "Eco-friendly pathways & catalysis.", tags: ["Solvents", "Catalysis", "Process"] },
-    { icon: Beaker, title: "Energy & Fuels", desc: "Sustainable energy solutions.", tags: ["Biofuels", "Hydrogen", "Solar"] },
-    { icon: Globe, title: "Circular Economy", desc: "Waste valorization strategies.", tags: ["Recycling", "Water", "Zero Waste"] },
-    { icon: Mic, title: "Policy & Ethics", desc: "Regulatory frameworks.", tags: ["Regulations", "Safety", "Impact"] },
-    { icon: Award, title: "Nano-Technology", desc: "Green nanomaterials applications.", tags: ["Materials", "Sensors", "Medicine"] },
-    { icon: User, title: "Biotechnology", desc: "Enzymatic processes.", tags: ["Enzymes", "Biomass", "Food"] }
+    { icon: Leaf, title: "Green Chemistry", desc: "Sustainable Processes & Fundamentals.", tags: ["Solvents", "Catalysis", "Design"] },
+    { icon: Zap, title: "Energy Transition", desc: "Renewable Energy sources.", tags: ["Biofuels", "Hydrogen", "Solar"] },
+    { icon: CheckCircle, title: "Health & Safety", desc: "Toxicology and Chemical Safety.", tags: ["Regulations", "Risk", "Health"] },
+    { icon: Mic, title: "AI in Chemistry", desc: "Artificial Intelligence Applications.", tags: ["Modeling", "Big Data", "Optimization"] },
   ];
 
   return (
     <section id="topics" className="section-padding topics-section-pro">
       <div className="container reveal">
         <div className="section-header">
-          <span className="section-label">Scientific Agenda</span>
-          <h2 className="section-title">Conference Sessions</h2>
+          <span className="section-label">Main Axes</span>
+          <h2 className="section-title">Scientific Topics</h2>
         </div>
-        <div className="grid-3">
+        <div className="grid-2-large">
           {topicsData.map((t, i) => (
             <div key={i} className="topic-card-pro group" onClick={() => onTopicClick(t)} style={{cursor:'pointer'}}>
               <div className="card-header">
@@ -191,10 +181,6 @@ const Topics = ({ onTopicClick }) => {
               <div className="topic-tags">
                 {t.tags.map((tag, idx) => <span key={idx} className="tag-pill">{tag}</span>)}
               </div>
-              <div className="card-footer">
-                <span className="learn-more">View Details</span>
-                <ArrowRight size={16} className="arrow-icon"/>
-              </div>
             </div>
           ))}
         </div>
@@ -203,29 +189,128 @@ const Topics = ({ onTopicClick }) => {
   );
 };
 
+// --- SCHEDULE (PROGRAMME) ---
+const Schedule = () => {
+  const [day, setDay] = useState(1);
+
+  return (
+    <section id="schedule" className="section-padding">
+      <div className="container reveal">
+        <div className="section-header">
+          <span className="section-label">Agenda</span>
+          <h2 className="section-title">Scientific Programme</h2>
+        </div>
+        
+        <div className="tabs-container">
+          <button className={`tab-btn ${day===1 ? 'active':''}`} onClick={()=>setDay(1)}>Day 1: Saturday, May 30</button>
+          <button className={`tab-btn ${day===2 ? 'active':''}`} onClick={()=>setDay(2)}>Day 2: Sunday, May 31</button>
+        </div>
+
+        <div className="schedule-list">
+          {day === 1 ? (
+            <>
+              <div className="schedule-item">
+                <div className="time">08:30 - 09:30</div>
+                <div className="details"><strong>Registration & Welcome Coffee</strong></div>
+              </div>
+              <div className="schedule-item">
+                <div className="time">09:30 - 10:30</div>
+                <div className="details"><strong>Official Opening Ceremony</strong><br/>Welcome addresses & Conference overview</div>
+              </div>
+              <div className="schedule-item highlight">
+                <div className="time">10:30 - 11:30</div>
+                <div className="details"><strong>Tribute to Prof. Mohamed Belbachir</strong><br/>& CNCV Official Launch</div>
+              </div>
+              <div className="schedule-item">
+                <div className="time">11:30 - 13:00</div>
+                <div className="details"><strong>Plenary Lectures</strong><br/>International and National Invited Speakers</div>
+              </div>
+              <div className="schedule-item">
+                <div className="time">13:00 - 14:00</div>
+                <div className="details">Lunch Break</div>
+              </div>
+              <div className="schedule-item">
+                <div className="time">14:00 - 16:30</div>
+                <div className="details"><strong>Oral Communications</strong><br/>Axis 1: Fundamentals | Axis 2: Sustainable Processes</div>
+              </div>
+              <div className="schedule-item">
+                <div className="time">19:30 - 22:00</div>
+                <div className="details" style={{color:'#d97706'}}><strong>🎉 Gala Dinner</strong><br/>Social Evening & Networking</div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="schedule-item">
+                <div className="time">09:00 - 10:30</div>
+                <div className="details"><strong>Plenary Lectures</strong><br/>Advanced Topics & Emerging Trends</div>
+              </div>
+              <div className="schedule-item">
+                <div className="time">10:45 - 12:30</div>
+                <div className="details"><strong>Oral Communications</strong><br/>Axis 3: Industrial & Environmental Applications</div>
+              </div>
+              <div className="schedule-item">
+                <div className="time">12:30 - 14:00</div>
+                <div className="details">Lunch Break</div>
+              </div>
+              <div className="schedule-item highlight">
+                <div className="time">14:00 - 15:30</div>
+                <div className="details"><strong>Special Session</strong><br/>Axis 4: AI & Green Chemistry</div>
+              </div>
+              <div className="schedule-item">
+                <div className="time">15:30 - 16:30</div>
+                <div className="details"><strong>Round Table Discussion</strong><br/>Challenges, Opportunities & Future Directions</div>
+              </div>
+              <div className="schedule-item">
+                <div className="time">16:30 - 17:00</div>
+                <div className="details"><strong>Awards & Closing Ceremony</strong></div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 // --- SPEAKERS ---
-const Speakers = () => (
-  <section id="speakers" className="section-padding">
-    <div className="container reveal">
-      <div className="section-header">
-        <span className="section-label">World Class Experts</span>
-        <h2 className="section-title">Keynote Speakers</h2>
-      </div>
-      <div className="grid-3">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="speaker-card">
-            <div className="speaker-img-container">
-              <img src={`https://randomuser.me/api/portraits/men/${i*10 + 5}.jpg`} alt="Speaker" className="speaker-img"/>
+const Speakers = () => {
+  const speakers = [
+    { name: "Prof. Andrea Pucci", country: "Italy" },
+    { name: "Prof. Gianluca Viscusi", country: "Italy" },
+    { name: "Prof. Katarzyna Kiegiel", country: "Poland" },
+    { name: "Prof. Mohammed El-Shazly", country: "Egypt" },
+    { name: "Prof. Radosław Kowalski", country: "Poland" },
+    { name: "Prof. Klaus Kümmerer", country: "Germany" },
+    { name: "Prof. Ebrahim Talebi", country: "Iran" },
+    { name: "Prof. Thomais Vlachogianni", country: "Greece" },
+    { name: "Prof. Landseer Tang", country: "Singapore" },
+    { name: "Prof. Salete Balula", country: "Portugal" },
+  ];
+
+  return (
+    <section id="speakers" className="section-padding bg-light">
+      <div className="container reveal">
+        <div className="section-header">
+          <span className="section-label">International Experts</span>
+          <h2 className="section-title">Keynote Speakers</h2>
+        </div>
+        <div className="speakers-grid">
+          {speakers.map((s, i) => (
+            <div key={i} className="speaker-card-mini">
+              <div className="speaker-avatar">
+                 <User size={40} color="#15803d"/>
+              </div>
+              <div style={{textAlign:'left'}}>
+                <h4>{s.name}</h4>
+                <p className="speaker-country">{s.country}</p>
+              </div>
             </div>
-            <h3>Prof. Name Surname</h3>
-            <p className="speaker-role">University of Oxford</p>
-            <p className="speaker-bio">Nobel Laureate in Chemistry, specialized in catalytic processes.</p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 // --- SUBMISSION ---
 const PaperSubmission = () => {
@@ -256,7 +341,7 @@ const PaperSubmission = () => {
       }]);
 
       if (dbError) throw dbError;
-      alert("Paper submitted successfully!");
+      alert("Abstract submitted successfully!");
     } catch (error) {
       alert("Error: " + error.message);
     } finally {
@@ -269,7 +354,7 @@ const PaperSubmission = () => {
       <div className="container reveal">
         <div className="section-header text-white">
            <h2 className="section-title text-white">Call For Papers</h2>
-           <p style={{opacity:0.9, fontSize:'1.1rem'}}>Share your research. Deadline: April 1st, 2026.</p>
+           <p style={{opacity:0.9, fontSize:'1.1rem'}}>Share your research in Green Chemistry.</p>
         </div>
         <div className="form-wrapper center-form">
           <form onSubmit={handleSubmit}>
@@ -336,7 +421,6 @@ const Registration = () => {
            </div>
            
            <div style={{marginTop: '30px'}}>
-             {/* REMPLACE "test" PAR TON VRAI CLIENT ID PAYPAL */}
              <PayPalScriptProvider options={{ "client-id": "test" }}>
                <PayPalButtons 
                 style={{layout: "vertical", color:'gold', shape:'rect'}} 
@@ -376,6 +460,17 @@ const Hotels = () => (
   </section>
 );
 
+// --- FOOTER ---
+const Footer = () => (
+  <footer className="footer-main">
+    <div className="container">
+       <h2>ICGCSD 2026</h2>
+       <p className="footer-desc">International Conference on Green Chemistry and Sustainable Development</p>
+       <p className="copyright">© 2026 ICGCSD. All rights reserved.</p>
+    </div>
+  </footer>
+);
+
 // --- SPONSORS ---
 const Sponsors = () => {
   const logos = [
@@ -387,7 +482,7 @@ const Sponsors = () => {
   return (
     <div className="sponsors-section">
       <div className="container overflow-hidden">
-         <h4 className="sponsors-title">Trusted Partners</h4>
+         <h4 className="sponsors-title">Official Partners</h4>
          <div className="marquee">
             <div className="marquee-content">{logos.map((l,i)=><img key={i} src={l} className="sponsor-img" alt="logo"/>)}</div>
             <div className="marquee-content">{logos.map((l,i)=><img key={i+'d'} src={l} className="sponsor-img" alt="logo"/>)}</div>
@@ -397,19 +492,35 @@ const Sponsors = () => {
   );
 };
 
-// --- FOOTER ---
-const Footer = () => (
-  <footer className="footer-main">
-    <div className="container">
-       <h2>IGCC 2026</h2>
-       <p className="footer-desc">The leading conference for sustainable chemistry and engineering.</p>
-       <div className="footer-icons">
-          <div className="icon-circle-footer"><Globe size={20}/></div>
-          <div className="icon-circle-footer"><Mail size={20}/></div>
-       </div>
-       <p className="copyright">© 2026 Green Chemistry Congress. All rights reserved.</p>
+// --- MODAL ---
+const TopicModal = ({ topic, onClose }) => {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content reveal active" onClick={e => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}><X size={24}/></button>
+        <div className="modal-header">
+          <div className="icon-box-pro" style={{width:'60px', height:'60px'}}><topic.icon size={30} /></div>
+          <div>
+            <span className="section-label" style={{marginBottom:'5px', fontSize:'0.8rem'}}>Track Details</span>
+            <h3 style={{fontSize:'1.8rem', fontFamily:'Playfair Display, serif'}}>{topic.title}</h3>
+          </div>
+        </div>
+        <div className="modal-body">
+          <p className="modal-desc">{topic.desc}</p>
+          <ul className="modal-list">
+            {topic.tags.map((tag, i) => (
+              <li key={i}><CheckCircle size={16} color="#15803d" style={{marginRight:'10px'}}/> {tag}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
-  </footer>
-);
+  );
+};
 
 export default App;
