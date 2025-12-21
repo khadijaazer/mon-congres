@@ -367,29 +367,88 @@ img { max-width: 100%; display: block; }
 /* =========================================
    15. RESPONSIVE
    ========================================= */
+/* =========================================
+   15. RESPONSIVE (CORRIGÉ POUR MOBILE)
+   ========================================= */
 @media (max-width: 900px) {
-  .hero-content h1 { font-size: 2.5rem; }
+  /* 1. Header & Hero */
+  .hero-content h1 { font-size: 2.2rem; }
   .about-section { grid-template-columns: 1fr; }
-  .about-img { min-height: 300px; order: -1; }
-  .about-content { padding: 40px 20px; }
-  .stats-mini-grid { flex-wrap: wrap; }
+  .about-img { min-height: 250px; order: -1; } /* Image moins haute sur mobile */
+  .about-content { padding: 30px 20px; }
   
+  /* 2. Grilles */
+  .grid-2, .grid-2-large, .stats-grid, .speakers-grid { grid-template-columns: 1fr; }
+  .stats-mini-grid { flex-wrap: wrap; justify-content: center; }
+  .schedule-item { flex-direction: column; gap: 10px; }
+
+  /* 3. Navigation Mobile */
   .nav-links {
     position: fixed; top: 0; right: 0; height: 100vh; width: 85%;
     background: white; flex-direction: column; padding: 100px 40px;
     transform: translateX(100%); transition: 0.4s; box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+    z-index: 1002; /* Au dessus de tout */
   }
   .nav-links.open { transform: translateX(0); }
-  .nav-links a { color: var(--text-main); font-size: 1.2rem; }
+  .nav-links a { color: var(--text-main); font-size: 1.2rem; margin-bottom: 15px; }
   
-  .nav-toggle { display: block; position: relative; z-index: 1001; }
+  .nav-toggle { display: block; position: relative; z-index: 1003; }
   .nav-toggle.active { color: var(--text-main); }
+
+  /* --- 4. CORRECTION CRITIQUE DE LA MODALE SPEAKER --- */
   
-  .grid-2, .grid-2-large, .stats-grid, .speakers-grid { grid-template-columns: 1fr; }
-  .schedule-item { flex-direction: column; gap: 10px; }
-  
-  /* Modal Mobile */
-  .speaker-modal-grid { grid-template-columns: 1fr; }
-  .speaker-sidebar { border-right: none; border-bottom: 1px solid #e2e8f0; padding: 30px 20px; }
-  .speaker-content { padding: 30px 20px; }
+  /* La carte elle-même */
+  .speaker-modal-card {
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh; /* Max 85% de la hauteur de l'écran */
+    width: 95%; /* Marge sur les côtés */
+    margin: 0 auto;
+    overflow-y: auto; /* Active le scroll À L'INTÉRIEUR de la carte */
+    border-radius: 15px;
+  }
+
+  /* La grille devient une colonne unique */
+  .speaker-modal-grid { 
+    display: flex;
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  /* Barre latérale (Photo + Nom) */
+  .speaker-sidebar { 
+    border-right: none; 
+    border-bottom: 1px solid #e2e8f0; 
+    padding: 30px 15px; 
+    background: #f8fafc;
+    position: relative; /* Pour le contexte */
+  }
+
+  /* L'image du profil : plus petite et centrée */
+  .speaker-profile-img { 
+    width: 140px; 
+    height: 140px; 
+    margin-bottom: 15px;
+    border-width: 3px;
+  }
+
+  /* Le contenu (Bio) */
+  .speaker-content { 
+    padding: 25px 20px; 
+    overflow: visible; /* On laisse le scroll se faire sur la carte parente */
+    max-height: none; /* Enlève la limite de hauteur interne */
+  }
+
+  /* Bouton Fermer : Plus gros et toujours visible */
+  .modal-close-btn {
+    position: fixed; /* Fixé par rapport à l'écran, pas la carte */
+    top: 20px;
+    right: 20px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    width: 45px; 
+    height: 45px;
+    z-index: 10000; /* Très haut */
+    color: #ef4444; /* Rouge pour être bien visible */
+  }
 }
