@@ -370,7 +370,15 @@ img { max-width: 100%; display: block; }
 /* =========================================
    15. RESPONSIVE (CORRIGÉ POUR MOBILE)
    ========================================= */
+/* =========================================
+   15. RESPONSIVE (CORRIGÉ POUR MOBILE)
+   ========================================= */
 @media (max-width: 900px) {
+  /* CORRECTION POUR L'IMAGE HERO SUR MOBILE */
+  .hero-section {
+    background-attachment: scroll; /* TRÈS IMPORTANT : désactive l'effet qui bug sur mobile */
+  }
+
   /* 1. Header & Hero */
   .hero-content h1 { font-size: 2.2rem; }
   .about-section { grid-template-columns: 1fr; }
@@ -395,9 +403,7 @@ img { max-width: 100%; display: block; }
   .nav-toggle { display: block; position: relative; z-index: 1003; }
   .nav-toggle.active { color: var(--text-main); }
 
-  /* --- 4. CORRECTION CRITIQUE DE LA MODALE SPEAKER --- */
-  
-  /* La carte elle-même */
+  /* 4. CORRECTION DE LA MODALE SPEAKER */
   .speaker-modal-card {
     display: flex;
     flex-direction: column;
@@ -407,15 +413,11 @@ img { max-width: 100%; display: block; }
     overflow-y: auto; /* Active le scroll À L'INTÉRIEUR de la carte */
     border-radius: 15px;
   }
-
-  /* La grille devient une colonne unique */
   .speaker-modal-grid { 
     display: flex;
     flex-direction: column;
     min-height: auto;
   }
-
-  /* Barre latérale (Photo + Nom) */
   .speaker-sidebar { 
     border-right: none; 
     border-bottom: 1px solid #e2e8f0; 
@@ -423,23 +425,17 @@ img { max-width: 100%; display: block; }
     background: #f8fafc;
     position: relative; /* Pour le contexte */
   }
-
-  /* L'image du profil : plus petite et centrée */
   .speaker-profile-img { 
     width: 140px; 
     height: 140px; 
     margin-bottom: 15px;
     border-width: 3px;
   }
-
-  /* Le contenu (Bio) */
   .speaker-content { 
     padding: 25px 20px; 
-    overflow: visible; /* On laisse le scroll se faire sur la carte parente */
-    max-height: none; /* Enlève la limite de hauteur interne */
+    overflow: visible; 
+    max-height: none; 
   }
-
-  /* Bouton Fermer : Plus gros et toujours visible */
   .modal-close-btn {
     position: fixed; /* Fixé par rapport à l'écran, pas la carte */
     top: 20px;
