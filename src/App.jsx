@@ -3,13 +3,12 @@ import { supabase } from './supabaseClient';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { Calendar, MapPin, CheckCircle, Leaf, Beaker, Globe, Menu, X, UploadCloud, User, Award, Mic, Clock, Zap, BookOpen, Phone, Mail } from 'lucide-react';
 
-// Si oran.jpg est dans public/, on utilise le chemin direct string, pas d'import
+// Si oran.jpg est dans public/, on utilise le chemin direct string
 const oranBg = "/oran.jpg"; 
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState(null);
-  // NOUVEAU : État pour le speaker sélectionné (si tu veux la modale bio)
   const [selectedSpeaker, setSelectedSpeaker] = useState(null);
 
   useEffect(() => {
@@ -44,7 +43,7 @@ function App() {
         <TopicModal topic={selectedTopic} onClose={() => setSelectedTopic(null)} />
       )}
       
-      {/* Modale Speaker (Optionnel si tu veux afficher les bios) */}
+      {/* MODALE PROFESSIONNELLE POUR LES SPEAKERS */}
       {selectedSpeaker && (
         <SpeakerModal speaker={selectedSpeaker} onClose={() => setSelectedSpeaker(null)} />
       )}
@@ -58,7 +57,7 @@ const Navbar = ({ scrolled }) => {
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="container nav-container">
-        <div className="nav-logo">ICGCSD 2026</div>
+        <div className="nav-logo">IGCC 2026</div>
         <button className={`nav-toggle ${isOpen ? 'active' : ''}`} onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
@@ -197,7 +196,7 @@ const Topics = ({ onTopicClick }) => {
   );
 };
 
-// --- SCHEDULE (PROGRAMME) ---
+// --- SCHEDULE ---
 const Schedule = () => {
   const [day, setDay] = useState(1);
 
@@ -280,29 +279,33 @@ const Schedule = () => {
   );
 };
 
-// --- SPEAKERS ---
+// --- SPEAKERS (DONNÉES COMPLÈTES) ---
 const Speakers = ({ onSpeakerClick }) => {
   const speakers = [
     { 
       name: "Prof. Gianluca Viscusi", 
       country: "Italy", 
-      image: "/dr-gianluca.jpg", // Assure-toi que l'image est dans public/
       institution: "University of Salerno",
-      bio: `Dr Gianluca Viscusi graduated in Chemical Engineering in 2016 with full honours at the Department of Industrial Engineering of the University of Salerno. Since 2015, he has been a teaching assistant of Fundamentals of Chemistry. In 2021, he got his PhD in Industrial Engineering. His main research topics concern:
-• Design, fabrication and characterisation of natural fibes reinforced polymeric systems
-• Production of fibrous membrane obtained through electrospinning techniques as sustainable systems for tissue engineering applications
-• Application of Mechanochemistry to design advanced materials
-• Design of smart materials for adsorption and photodegradation of pollutants` // Ajoute le reste de la bio si tu veux
+      // Assurez-vous que l'image est dans public/dr-gianluca.jpg
+      image: "/dr-gianluca.jpg", 
+      role: "Keynote Speaker",
+      bio: "Dr Gianluca Viscusi graduated in Chemical Engineering in 2016 with full honours at the Department of Industrial Engineering of the University of Salerno. Since 2015, he has been a teaching assistant of Fundamentals of Chemistry. In 2021, he got his PhD in Industrial Engineering.",
+      topics: [
+        "Design, fabrication and characterisation of natural fibers reinforced polymeric systems",
+        "Production of fibrous membrane obtained through electrospinning techniques as sustainable systems for tissue engineering applications",
+        "Application of Mechanochemistry to design advanced materials",
+        "Design of smart materials for adsorption and photodegradation of pollutants"
+      ]
     },
-    { name: "Prof. Andrea Pucci", country: "Italy", institution: "University of Pisa" },
-    { name: "Prof. Katarzyna Kiegiel", country: "Poland", institution: "Institute of Nuclear Chemistry" },
-    { name: "Prof. Mohammed El-Shazly", country: "Egypt", institution: "Ain Shams University" },
-    { name: "Prof. Radosław Kowalski", country: "Poland", institution: "Lublin University" },
-    { name: "Prof. Klaus Kümmerer", country: "Germany", institution: "Leuphana University" },
-    { name: "Prof. Ebrahim Talebi", country: "Iran", institution: "Darab University" },
-    { name: "Prof. Thomais Vlachogianni", country: "Greece", institution: "University of Athens" },
-    { name: "Prof. Landseer Tang", country: "Singapore", institution: "Singapore Tech" },
-    { name: "Prof. Salete Balula", country: "Portugal", institution: "University of Porto" },
+    { name: "Prof. Andrea Pucci", country: "Italy", institution: "University of Pisa", image: null, role: "Keynote Speaker", bio: "Biography coming soon...", topics: [] },
+    { name: "Prof. Katarzyna Kiegiel", country: "Poland", institution: "Institute of Nuclear Chemistry", image: null, role: "Invited Speaker", bio: "Biography coming soon...", topics: [] },
+    { name: "Prof. Mohammed El-Shazly", country: "Egypt", institution: "Ain Shams University", image: null, role: "Keynote Speaker", bio: "Biography coming soon...", topics: [] },
+    { name: "Prof. Radosław Kowalski", country: "Poland", institution: "Lublin University", image: null, role: "Keynote Speaker", bio: "Biography coming soon...", topics: [] },
+    { name: "Prof. Klaus Kümmerer", country: "Germany", institution: "Leuphana University", image: null, role: "Keynote Speaker", bio: "Biography coming soon...", topics: [] },
+    { name: "Prof. Ebrahim Talebi", country: "Iran", institution: "Darab University", image: null, role: "Keynote Speaker", bio: "Biography coming soon...", topics: [] },
+    { name: "Prof. Thomais Vlachogianni", country: "Greece", institution: "University of Athens", image: null, role: "Keynote Speaker", bio: "Biography coming soon...", topics: [] },
+    { name: "Prof. Landseer Tang", country: "Singapore", institution: "Singapore Tech", image: null, role: "Keynote Speaker", bio: "Biography coming soon...", topics: [] },
+    { name: "Prof. Salete Balula", country: "Portugal", institution: "University of Porto", image: null, role: "Keynote Speaker", bio: "Biography coming soon...", topics: [] },
   ];
 
   return (
@@ -311,12 +314,17 @@ const Speakers = ({ onSpeakerClick }) => {
         <div className="section-header">
           <span className="section-label">International Experts</span>
           <h2 className="section-title">Keynote Speakers</h2>
+          <p style={{color:'#64748b'}}>Click on a speaker to view their full profile.</p>
         </div>
         <div className="speakers-grid">
           {speakers.map((s, i) => (
-            <div key={i} className="speaker-card-mini" onClick={() => onSpeakerClick(s)}>
+            <div key={i} className="speaker-card-mini" onClick={() => onSpeakerClick(s)} style={{cursor: 'pointer'}}>
               <div className="speaker-avatar">
-                 {s.image ? <img src={s.image} alt={s.name} /> : <User size={40} color="#15803d"/>}
+                 {s.image ? (
+                   <img src={s.image} alt={s.name} />
+                 ) : (
+                   <User size={40} color="#15803d"/>
+                 )}
               </div>
               <div style={{textAlign:'left'}}>
                 <h4>{s.name}</h4>
@@ -327,6 +335,108 @@ const Speakers = ({ onSpeakerClick }) => {
         </div>
       </div>
     </section>
+  );
+};
+
+// --- STATS (Pour combler les trous) ---
+const Stats = () => (
+  <div className="stats-bar">
+    <div className="container stats-grid">
+      <div className="stat-item"><h3>30+</h3><p>Speakers</p></div>
+      <div className="stat-item"><h3>500+</h3><p>Attendees</p></div>
+      <div className="stat-item"><h3>40+</h3><p>Countries</p></div>
+      <div className="stat-item"><h3>15</h3><p>Workshops</p></div>
+    </div>
+  </div>
+);
+
+// --- MODALE SPEAKER PROFESSIONNELLE ---
+const SpeakerModal = ({ speaker, onClose }) => {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="speaker-modal-card reveal active" onClick={e => e.stopPropagation()}>
+        <button className="modal-close-btn" onClick={onClose}><X size={24}/></button>
+        
+        <div className="speaker-modal-grid">
+          {/* COLONNE GAUCHE */}
+          <div className="speaker-sidebar">
+            <div className="speaker-profile-img">
+              {speaker.image ? (
+                <img src={speaker.image} alt={speaker.name} />
+              ) : (
+                <div className="placeholder-avatar"><User size={80} color="#fff"/></div>
+              )}
+            </div>
+            
+            <div className="speaker-sidebar-info">
+              <span className="speaker-badge">{speaker.role || "Speaker"}</span>
+              <h3>{speaker.name}</h3>
+              <p className="speaker-uni">{speaker.institution}</p>
+              <div className="speaker-loc">
+                <MapPin size={16} style={{display:'inline', marginRight:'5px'}}/> 
+                {speaker.country}
+              </div>
+            </div>
+          </div>
+
+          {/* COLONNE DROITE */}
+          <div className="speaker-content">
+            <h4 className="content-title">Biography</h4>
+            <p className="bio-text">{speaker.bio}</p>
+
+            {speaker.topics && speaker.topics.length > 0 && (
+              <>
+                <h4 className="content-title" style={{marginTop:'30px'}}>Research Interests</h4>
+                <ul className="research-list">
+                  {speaker.topics.map((topic, index) => (
+                    <li key={index}>
+                      <div className="check-icon"><CheckCircle size={18}/></div>
+                      <span>{topic}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- MODALE TOPIC (Pour les axes scientifiques) ---
+const TopicModal = ({ topic, onClose }) => {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content reveal active" onClick={e => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}><X size={24}/></button>
+        <div className="modal-header">
+          <div className="icon-box-pro" style={{width:'60px', height:'60px'}}><topic.icon size={30} /></div>
+          <div>
+            <span className="section-label" style={{marginBottom:'5px', fontSize:'0.8rem'}}>Track Details</span>
+            <h3 style={{fontSize:'1.8rem', fontFamily:'Playfair Display, serif'}}>{topic.title}</h3>
+          </div>
+        </div>
+        <div className="modal-body">
+          <p className="modal-desc">{topic.desc}</p>
+          <ul className="modal-list">
+            {topic.tags.map((tag, i) => (
+              <li key={i}><CheckCircle size={16} color="#15803d" style={{marginRight:'10px'}}/> {tag}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -488,85 +598,5 @@ const Footer = () => (
     </div>
   </footer>
 );
-
-// --- SPONSORS ---
-const Sponsors = () => {
-  const logos = [
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2560px-Google_2015_logo.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/2560px-Amazon_logo.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/2560px-IBM_logo.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/2560px-Netflix_2015_logo.svg.png"
-  ];
-  return (
-    <div className="sponsors-section">
-      <div className="container overflow-hidden">
-         <h4 className="sponsors-title">Official Partners</h4>
-         <div className="marquee">
-            <div className="marquee-content">{logos.map((l,i)=><img key={i} src={l} className="sponsor-img" alt="logo"/>)}</div>
-            <div className="marquee-content">{logos.map((l,i)=><img key={i+'d'} src={l} className="sponsor-img" alt="logo"/>)}</div>
-         </div>
-      </div>
-    </div>
-  );
-};
-
-// --- MODALES (TOPIC & SPEAKER) ---
-const TopicModal = ({ topic, onClose }) => {
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = 'unset'; };
-  }, []);
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content reveal active" onClick={e => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}><X size={24}/></button>
-        <div className="modal-header">
-          <div className="icon-box-pro" style={{width:'60px', height:'60px'}}><topic.icon size={30} /></div>
-          <div>
-            <span className="section-label" style={{marginBottom:'5px', fontSize:'0.8rem'}}>Track Details</span>
-            <h3 style={{fontSize:'1.8rem', fontFamily:'Playfair Display, serif'}}>{topic.title}</h3>
-          </div>
-        </div>
-        <div className="modal-body">
-          <p className="modal-desc">{topic.desc}</p>
-          <ul className="modal-list">
-            {topic.tags.map((tag, i) => (
-              <li key={i}><CheckCircle size={16} color="#15803d" style={{marginRight:'10px'}}/> {tag}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const SpeakerModal = ({ speaker, onClose }) => {
-  useEffect(() => { document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = 'unset'; }; }, []);
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="speaker-modal-card reveal active" onClick={e => e.stopPropagation()}>
-        <button className="modal-close-btn" onClick={onClose}><X size={24}/></button>
-        <div className="speaker-modal-grid">
-          <div className="speaker-sidebar">
-            <div className="speaker-profile-img">
-              {speaker.image ? <img src={speaker.image} alt={speaker.name} /> : <div className="placeholder-avatar"><User size={80} color="#fff"/></div>}
-            </div>
-            <div className="speaker-sidebar-info">
-              <span className="speaker-badge">Keynote Speaker</span>
-              <h3>{speaker.name}</h3>
-              <p className="speaker-uni">{speaker.institution}</p>
-              <div className="speaker-loc"><MapPin size={16} style={{display:'inline', marginRight:'5px'}}/> {speaker.country}</div>
-            </div>
-          </div>
-          <div className="speaker-content">
-            <h4 className="content-title">Biography</h4>
-            <p className="bio-text">{speaker.bio || "Biography not available yet."}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default App;
